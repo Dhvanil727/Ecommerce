@@ -5,7 +5,7 @@ import userModel from "../models/userModel.js";
 import JWT from "jsonwebtoken"
 export const registercontroller=async(request,response)=>{
 try {
-    const {name,email,password,phone,address}=request.body;
+    const {name,email,password,phone,address,answer}=request.body;
     if(!name){
         response.send({message:"Name is required"});
     }
@@ -21,6 +21,9 @@ try {
     if(!address){
         response.send({message:"Address is required"});
     }
+    if(!answer){
+        response.send({message:"Address is required"});
+    }
 
     //existing user
     const existinguser=await userModel.findOne({email});
@@ -34,7 +37,7 @@ try {
     // register user
     const hashedPassword=await hashPassword(password);
     // save
-    const user=await new userModel({name,email,phone,address,password:hashedPassword}).save();
+    const user=await new userModel({name,email,phone,address,answer,password:hashedPassword}).save();
     response.status(200).send({
         success:true,
         message:"User Registered Successfully"
@@ -100,7 +103,41 @@ export const logincontroller=async(request,response)=>{
     }
 }
 
-
+//forgot pass controller
+export const forgotpasscontroller=async(request,response)=>{
+    try {
+        const {email,answer,newpassword}=request.body;
+        if(!email){
+            response.send({message:"email is required"});
+        }
+        if(!answer){
+            response.send({message:"answer is required"});
+        }
+        if(!newpassword){
+            response.send({message:"newpassword is required"});
+        }
+        const user=await userModel.findOne({email,answer});
+        if(!user){
+            response.status(404).send({
+                success:false,
+                message:"wrong email or answer"
+            })
+        }
+        const hashed=await hashPassword(newpassword);
+        await userModel.findByIdAndUpdate(user._id,{password:hashed});
+        response.status(200).send({
+            success:true,
+            message:"Password reset successfully"
+        })
+    } catch (error) {
+        console.log(error);
+        response.status(500).send({
+            success:false,
+            message:"Something went wrong",
+            error
+        })
+    }
+}
 //test
 export const testcontroller=(request,response)=>{
     response.send("Protected route");
