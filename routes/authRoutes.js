@@ -19,8 +19,13 @@ router.get('/test',requireSignIN,isAdmin,testcontroller);
 
 
 
-//protected route
+//protected  user route
 router.get("/user-auth",requireSignIN,(request,response)=>{
+    response.status(200).send({ok:true});
+})
+
+//protected admin route
+router.get("/admin-auth",requireSignIN,isAdmin,(request,response)=>{
     response.status(200).send({ok:true});
 })
 export default router;
