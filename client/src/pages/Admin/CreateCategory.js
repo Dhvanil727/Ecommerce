@@ -4,25 +4,31 @@ import AdminMenu from "../../components/Layouts/AdminMenu";
 import toast from "react-hot-toast";
 import axios from "axios";
 import CategoryForm from "../../components/Form/CategoryForm.js";
-
+import { Modal } from "antd"
 const CreateCategory = () => {
   const [categories, setcategories] = useState([]);
   const [name, setname] = useState([]);
-  const handlesubmit=async(e)=>{
+  const [visible, setvisible] = useState(false);
+  const [selected,setselected]=useState(null);
+  const [updatedname, setupdatedname]=useState("");
+  const handlesubmit = async (e) => {
     e.preventDefault();
     try {
-      const {data}=await axios.post(`${process.env.REACT_APP_API}/api/v1/category/create-category`,{name});
-      if(data.success){
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API}/api/v1/category/create-category`,
+        { name }
+      );
+      if (data.success) {
         toast.success(data.message);
         getallcategories();
-      }else{
+      } else {
         toast.error(data.message);
       }
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong in input form");
     }
-  }
+  };
   const getallcategories = async () => {
     try {
       const { data } = await axios.get(
@@ -40,6 +46,39 @@ const CreateCategory = () => {
   useEffect(() => {
     getallcategories();
   }, []);
+  const handelupdate=async(e)=>{
+    e.preventDefault();
+try {
+  const { data } = await axios.put(
+    `${process.env.REACT_APP_API}/api/v1/category/update-category/${selected._id}`,{name:updatedname}
+  );
+  toast.success(data.message);
+
+  setselected(null);
+  setupdatedname("");
+  setvisible(false);
+  getallcategories();
+} catch (error) {
+  console.log(error);
+  toast.error("something went wrong");
+}
+  }
+
+  const handeldelete=async(pId)=>{
+  
+try {
+  const { data } = await axios.delete(
+    `${process.env.REACT_APP_API}/api/v1/category/delete-category/${pId}`
+  );
+  toast.success(data.message);
+
+  getallcategories();
+} catch (error) {
+  console.log(error);
+  toast.error("something went wrong");
+}
+  }
+
   return (
     <Layout title={"Dashboard - Create Category"}>
       <div className="container-fluid m-3 p-3">
@@ -47,12 +86,16 @@ const CreateCategory = () => {
           <div className="col-md-3">
             <AdminMenu />
           </div>
-        
+
           <div className="col-md-9">
             <h1>Manage Category</h1>
             <div className="p-3 w-75">
-          <CategoryForm handlesubmit={handlesubmit} value={name} setValue={setname} />
-        </div>
+              <CategoryForm
+                handlesubmit={handlesubmit}
+                value={name}
+                setValue={setname}
+              />
+            </div>
             <div className="w-75">
               <table className="table">
                 <thead>
@@ -68,8 +111,10 @@ const CreateCategory = () => {
                         <td key={c._id}>{c.name}</td>
                         <td>
                           {" "}
-                          <button className="btn btn-primary ms-2">Edit</button>
-                          <button className="btn btn-danger ms-2">Delete</button>
+                          <button className="btn btn-primary ms-2" onClick={()=>{setvisible(true); setupdatedname(c.name); setselected(c)}}>Edit</button>
+                          <button className="btn btn-danger ms-2" onClick={()=>{handeldelete(c._id)}}>
+                            Delete
+                          </button>
                         </td>
                       </tr>
                     </>
@@ -77,6 +122,7 @@ const CreateCategory = () => {
                 </tbody>
               </table>
             </div>
+            <Modal onCancel={()=>setvisible(false)} footer={null} visible={visible}> <CategoryForm value={updatedname} setValue={setupdatedname} handlesubmit={handelupdate}/></Modal>
           </div>
         </div>
       </div>
