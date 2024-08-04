@@ -10,5 +10,5 @@ router.get("/get-products" ,getallproductscontroller);
 router.get("/get-products/:slug" ,getsingleproductscontroller);
 //get photo
 router.get("/product-photo/:pid",productphotocontroller);
-router.delete("/product/:pid",deleteproductcontroller);
+router.delete("/delete-product/:pid",deleteproductcontroller);
 export default router;

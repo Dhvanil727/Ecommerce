@@ -100,7 +100,7 @@ try {
 export const deleteproductcontroller=async(request,response)=>{
   try {
     const product =await productModel.findByIdAndDelete(request.params.pid).select("-photo");
-    response.status(500).send({
+    response.status(200).send({
       success:true,
       message:"product deleted successfully",
       
