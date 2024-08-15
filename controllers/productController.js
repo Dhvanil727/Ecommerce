@@ -3,6 +3,7 @@ import productModel from "../models/productModel.js";
 import fs from "fs";
 
 
+
 export const createproductcontroller = async (request, response) => {
   try {
     const { name, slug, description, price, category, quantity, shipping } =
@@ -153,5 +154,63 @@ export const updateproductcontroller=async(request,response)=>{
       message: " error in update Product ",
       error,
     });
+  }
+}
+
+export const filterproductcontroller=async(request,response)=>{
+  try {
+    const {checked, radio}=request.body;
+    let args={}
+    if(checked.length >0) args.category=checked;
+    if(radio.length) args.price={$gte:radio[0] , $lte :radio[1]}
+    const products= await productModel.find(args)
+    response.status(200).send({
+      success:true,
+      products
+    })
+  } catch (error) {
+    console.log(error);
+    response.status(500).send({
+      success: false,
+      message: " error in filter Product ",
+      error,
+    });
+  }
+}
+
+export const productcountcontroller=async(request,response)=>{
+  try {
+    const total=await productModel.find({}).estimatedDocumentCount();
+    response.status(200).send({
+      success:true,
+      total
+    })
+  } catch (error) {
+    console.log(error);
+    response.status(400).send({
+      success: false,
+      message: " error in product count ",
+      error,
+    })
+  }
+}
+
+//product list based on page
+export const productlistcontroller=async(request,response)=>{
+  try {
+    const perpage=7;
+    const page=request.params.page? request.params.page:1
+    const products=await productModel.find({}).select("-photo").limit(perpage)
+    response.status(200).send({
+      success:true,
+      products
+    })
+  } catch (error) {
+    console.log(error);
+    response.status(400).send({
+      success: false,
+      message: " error in product list ",
+      error,
+    })
   }
 }
