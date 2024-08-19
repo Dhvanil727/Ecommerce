@@ -4,14 +4,18 @@ import Layout from "../components/Layouts/Layout";
 import axios from "axios";
 import { Checkbox, Radio } from "antd";
 import { Prices } from "../components/Prices.js";
-
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../context/Cart.js";
+import toast from "react-hot-toast";
 const HomePage = () => {
 
+  const navigate=useNavigate();
   const [products, setproducts] = useState([]);
   const [categories, setcategories] = useState([]);
   const [checked, setchecked] = useState([]);
   const [radio, setradio] = useState([]);
   const[total,settotal]=useState(0);
+  const [cart,setcart]=useCart();
   // const[page,setpage]=useState(1);
   // const[loading,setloading]=useState(false);
 
@@ -131,8 +135,14 @@ const HomePage = () => {
                   <h5 className="card-title">{p.name}</h5>
                   <p className="card-text">{p.description.substring(0,30)}...</p>
                   <p className="card-text">$ {p.price}</p>
-                  <button className="btn btn-primary ms-1">More details</button>
-                  <button className="btn btn-secondary ms-1">
+                  <button className="btn btn-primary ms-1" onClick={()=>{
+                    navigate(`/product/${p.slug}`)
+                  }}>More details</button>
+                  <button className="btn btn-secondary ms-1" onClick={()=>{
+                    setcart([...cart,p]);
+                    localStorage.setItem('cart',JSON.stringify([...cart,p ]))
+                    toast.success("Item added to cart")
+                  }}>
                     Add to cart
                   </button>
                 </div>

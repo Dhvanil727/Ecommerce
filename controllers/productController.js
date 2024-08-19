@@ -1,6 +1,7 @@
 import slugify from "slugify";
 import productModel from "../models/productModel.js";
 import fs from "fs";
+import categoryModel from "../models/categoryModel.js"
 
 
 
@@ -210,6 +211,67 @@ export const productlistcontroller=async(request,response)=>{
     response.status(400).send({
       success: false,
       message: " error in product list ",
+      error,
+    })
+  }
+}
+
+export const searchproductcontroller=async(request,response)=>{
+  try {
+    const {keyword}=request.params
+    const results=await productModel.find({
+      $or:[
+        {name:{$regex:keyword,$options:"i"} },
+        {description:{$regex:keyword,$options:"i"} },
+      ]
+    }).select("-photo");
+    response.json(results); 
+  } catch (error) {
+    console.log(error);
+  response.status(400).send({
+    success: false,
+    message: " error in search product ",
+    error,
+  })
+  }
+}
+
+export const relatedproductcontroller=async(request,response)=>{
+  try {
+    const {pid,cid}=request.params;
+    const products =await productModel.find({
+      category:cid,
+      _id:{$ne:pid}
+    }).select("-photo").limit(3).populate("category")
+    response.status(200).send({
+      success:true,
+      products
+    }) 
+  } catch (error) {
+    console.log(error)
+    response.status(400).send({
+      success: false,
+      message: " error in related product ",
+      error,
+
+    })
+  }
+}
+
+export const productcategorycontroller=async(request,response)=>{
+  try {
+    const category=await categoryModel.findOne({slug:request.params.slug});
+    const products=await productModel.find({category}).populate("category");
+    response.status(200).send({
+      success:true,
+      products,
+      category
+    })
+  } catch (error) {
+    console.log(error);
+    response.status(400).send({
+      success: false,
+      message: " error in product category ",
       error,
     })
   }
