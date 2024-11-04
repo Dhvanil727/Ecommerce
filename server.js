@@ -39,9 +39,9 @@ app.use("/api/v1/products", productRoutes);
 //     )
 // })
 
-app.get('*', (request, response) => {
-  response.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-});
+// app.get('*', (request, response) => {
+//   response.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+// });
 const PORT=process.env.PORT || 8080;
 app.listen(PORT, ()=>{
     // console.log("Server is running on port 8080");
