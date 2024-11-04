@@ -21,7 +21,7 @@ const Header = () => {
     toast.success("Logged out successfully");
   };
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav className="navbar navbar-expand-lg navbar-light bg-light ">
       <button
         className="navbar-toggler"
         type="button"

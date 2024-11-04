@@ -7,6 +7,7 @@ import { Prices } from "../components/Prices.js";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/Cart.js";
 import toast from "react-hot-toast";
+import "../styles/Homepage.css"
 const HomePage = () => {
 
   const navigate=useNavigate();
@@ -90,7 +91,13 @@ const HomePage = () => {
   }
   return (
     <Layout title={"Ecommerce app - Shop now"}>
-      <div className="row mt-3">
+      <img
+        src="/images/banner3.jpg"
+        className="banner-img"
+        alt="bannerimage"
+        width={"100%"}
+      />
+      <div className="container-fluid row mt-3 home-page">
         <div className="col-md-2">
           <h4 className="text-center ">Filter by category</h4>
           <div className="d-flex flex-column m-3">
@@ -148,15 +155,11 @@ const HomePage = () => {
                 </div>
               </div>
             ))}
+
+            {/* new */}
+            
           </div>
-          {/* <div className="m-3 p-2">
-           {products && products.length < total && (
-            <button className="btn btn-warning" onClick={(e)=>{
-              e.preventDefault();
-              setpage(page+1);
-            }}>{loading ? "Loading..." : "Loadmore"}</button>
-           )}
-          </div> */}
+       
         </div>
 
       </div>

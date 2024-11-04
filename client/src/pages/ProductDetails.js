@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Layout from '../components/Layouts/Layout'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
-
+import "../styles/ProductDetailsStyles.css";
 const ProductDetails = () => {
 
     const params=useParams()
@@ -33,11 +33,12 @@ const ProductDetails = () => {
     }
   return (
     <Layout>
-      <div className='row container mt-2'>
+      <div className='row container mt-2  product-details'>
         <div className='col-md-6'> 
-        <img src={`${process.env.REACT_APP_API}/api/v1/products/product-photo/${product._id}`} className="card-img-top" alt={product.name} />
+        <img src={`${process.env.REACT_APP_API}/api/v1/products/product-photo/${product._id}`} className="card-img-top" alt={product.name} height="500"
+            width={"350px"} />
         </div>
-        <div className='col-md-6'>
+        <div className='col-md-6 product-details-info'>
             <h1 className='text-center'> Product Details</h1>
             <h6>Name: {product.name}</h6>
             <h6>Description: {product.description}</h6>
@@ -50,7 +51,7 @@ const ProductDetails = () => {
         </div>
       </div>
       <hr />
- <div className='row m-3 '>
+ <div className='row m-3  similar-products'>
     <h1 className='text-center'>Similar products</h1>
     {relatedproducts.length <1 && <p className='text-center'>No similar products found</p>}
 

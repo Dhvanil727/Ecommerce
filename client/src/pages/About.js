@@ -14,12 +14,8 @@ const About = () => {
         </div>
         <div className="col-md-4">
           <p className="text-justify mt-2">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus
-            officiis obcaecati esse tempore unde ratione, eveniet mollitia,
-            perferendis eius temporibus dicta blanditiis doloremque explicabo
-            quasi sunt vero optio cum aperiam vel consectetur! Laborum enim
-            accusantium atque, excepturi sapiente amet! Tenetur ducimus aut
-            commodi illum quidem neque tempora nam.
+         
+Welcome to my Ecommerce , your ultimate destination for all essentials products. We are passionate about bringing innovation and reliability to your fingertips, catering to both everyday needs . Here, we pride ourselves on being a trusted provider of a wide array of different types of products, including cutting-edge components, accessories, and devices. Our extensive inventory encompasses everything from mobile accessories and computer peripherals to advanced smart home gadgets and professional-grade networking equipment.
           </p>
         </div>
       </div>

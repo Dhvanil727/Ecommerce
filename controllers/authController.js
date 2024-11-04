@@ -1,8 +1,8 @@
 
-import { response } from "express";
 import { comparePassword, hashPassword } from "../helpers/authHelper.js";
 import userModel from "../models/userModel.js";
 import JWT from "jsonwebtoken"
+import orderModel from "../models/orderModel.js";
 export const registercontroller=async(request,response)=>{
 try {
     const {name,email,password,phone,address,answer}=request.body;
@@ -142,3 +142,123 @@ export const forgotpasscontroller=async(request,response)=>{
 export const testcontroller=(request,response)=>{
     response.send("Protected route");
 }
+
+export const updateprofilecontroller=async(request,response)=>{
+    // try {
+    //     const {name, password,phone,address}=request.body;
+    //     console.log(request.body)
+    //     const user=await userModel.findById(request.user._id);
+    //     if(password && password.length<6){
+    //         return response.json({error:"Password is required 6 character long"})
+    //     }
+    //     const hashedPassword=password? hashPassword(password): undefined;
+    //     const updateduser=await findByIdAndUpdate(request.user._id,
+    //     {
+    //         name: name || user.name,
+    //         password: hashedPassword || user.password,
+    //         phone: phone || user.phone,
+    //         address: address || user.address
+    //     },
+    //     {new:true}
+    // );
+    // response.status(200).send({
+    //     success:true,
+    //     message:"Profile updated successfully",
+    //     updateduser
+    // });
+    // } catch (error) {
+    //     console.log(error);
+    //     console.log(request.body) 
+    //     response.status(400).send({
+    //         success:false,
+    //         message:"Error while updating profile",
+    //         error
+    //     })
+    // }
+    try {
+        const { name, email, password, address, phone } = request.body;
+        const user = await userModel.findById(request.user._id);
+        //password
+        if (password && password.length < 6) {
+          return response.json({ error: "Passsword is required and 6 character long" });
+        }
+        const hashedPassword = password ? await hashPassword(password) : undefined;
+        const updatedUser = await userModel.findByIdAndUpdate(
+          request.user._id,
+          {
+            name: name || user.name,
+            password: hashedPassword || user.password,
+            phone: phone || user.phone,
+            address: address || user.address,
+          },
+          { new: true }
+        );
+        response.status(200).send({
+          success: true,
+          message: "Profile Updated SUccessfully",
+          updatedUser,
+        });
+      } catch (error) {
+        console.log(error);
+        response.status(400).send({
+          success: false,
+          message: "Error WHile Update profile",
+          error,
+        });
+      }
+}
+export const getOrdersController = async (request, response) => {
+    try {
+      const orders = await orderModel
+        .find({buyer: request.user._id})
+        .populate("products", "-photo")
+        .populate("buyer", "name")
+        // .sort({ createdAt: "-1" });
+      response.json(orders);
+      console.log(orders);
+    } catch (error) {
+      console.log(error);
+      response.status(500).send({
+        success: false,
+        message: "Error WHile Geting Orders",
+        error,
+      });
+    }
+  };
+
+  export const getAllOrdersController = async (req, res) => {
+    try {
+      const orders = await orderModel
+        .find({})
+        .populate("products", "-photo")
+        .populate("buyer", "name")
+        // .sort({ createdAt: "-1" });
+      res.json(orders);
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        success: false,
+        message: "Error WHile Geting Orders",
+        error,
+      });
+    }
+  };
+  export const orderStatusController = async (req, res) => {
+    try {
+      const { orderId } = req.params;
+      const { status } = req.body;
+      const orders = await orderModel.findByIdAndUpdate(
+        orderId,
+        { status },
+        { new: true }
+      );
+      res.json(orders);
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        success: false,
+        message: "Error While Updateing Order",
+        error,
+      });
+    }
+  };

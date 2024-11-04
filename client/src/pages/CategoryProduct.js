@@ -4,6 +4,7 @@ import { useState,useEffect } from 'react'
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import "../styles/CategoryProductStyles.css";
 export const CategoryProduct = () => {
     const [category,setcategory]=useState([]);
     const [products,setproducts]=useState([]);
@@ -23,7 +24,7 @@ export const CategoryProduct = () => {
     },[])
   return (
     <Layout>
-        <div className='container mt-3'> 
+        <div className='container mt-3 category'> 
 <h4 className='text-center'>Category: { category.name}</h4>
 <h6 className='text-center'>Found {products.length} products</h6>
 <div className="row">
